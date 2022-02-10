@@ -12,19 +12,46 @@ include:
   - {{ sls_enable_check }}
   - {{ sls_package_install }}
 
-pki-config-file-file-managed:
+# Slightly different arguments depending on OS family
+{% if salt['grains.get']('os_family') == 'Debian' %}
+  {% set argument = ' ' %}
+{% else %}
+  {% set argument = '/' + rpmkeys.local_cert_store + '/' + certname %}
+{% endif %}
+
+
+# Loop through the pubcerts pillar
+{% for certname, certtext in salt['pillar.get']('pki:lookup:pubcerts',{}).items() %}
+{{ certname }}-cert-config-file-file-managed:
   file.managed:
-    - name: {{ pki.config }}
-    - source: {{ files_switch(['example.tmpl'],
-                              lookup='pki-config-file-file-managed'
-                 )
-              }}
+    - name: {{ pki.local_cert_store }}/{{ certname }}.crt
+    - contents: |
+        {{ certtext | indent(8) }}
     - mode: "0644"
     - user: root
-    - group: {{ pki.rootgroup }}
+    - group: root
     - makedirs: True
-    - template: jinja
     - require:
       - sls: {{ sls_package_install }}
-    - context:
-        pki: {{ pki | json }}
+  cmd.run:
+    - name: {{ pki.cert_import_command }} {{ argument }}
+    - onchanges_any:
+      - file: {{ certname }}-cert-config-file-file-managed
+
+# Loop through the pubkeys pillar
+{% for keyname, keytext in salt['pillar.get']('pki:lookup:pubkeys',{}).items() %}
+{{ keyname }}-key-config-file-file-managed:
+  file.managed:
+    - name: {{ pki.local_key_store }}/{{ keyname }}.crt
+    - contents: |
+        {{ keyname | indent(8) }}
+    - mode: "0644"
+    - user: root
+    - group: root
+    - makedirs: True
+    - require:
+      - sls: {{ sls_package_install }}
+  cmd.run:
+    - name: {{ pki.key_import_command }}/{{ keyname }}
+    - onchanges_any:
+      - file: {{ keyname }}-key-config-file-file-managed

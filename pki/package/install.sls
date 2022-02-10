@@ -9,6 +9,10 @@
 include:
   - {{ sls_enable_check }}
 
-pki-package-install-pkg-installed:
+cert_import_pkg-install-pkg-installed:
   pkg.installed:
-    - name: {{ pki.pkg.name }}
+    - name: {{ pki.cert_import_pkg.name }}
+
+key_import_pkg-install-pkg-installed:
+  pkg.installed:
+    - name: {{ pki.key_import_pkg.name }}

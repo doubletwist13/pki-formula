@@ -3,7 +3,4 @@
 
 include:
   - .check
-  - .package
   - .config
-  - .service
-  - .subcomponent

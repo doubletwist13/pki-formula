@@ -12,7 +12,13 @@
 # values: {}
 ---
 values:
-  pkg:
-    name: pki-debian
-  config: /etc/pki.d/custom.conf
+  key_import_pkg:
+    - name: apt
+  cert_import_pkg:
+    - name: ca-certificates
+
+  cert_store: /usr/local/share/ca-certificates
+  key_store: /etc/mygpgkeystore
+  cert_import_command: /usr/sbin/update-ca-certificates
+  key_import_command: '/usr/bin/apt-key add'
 ...

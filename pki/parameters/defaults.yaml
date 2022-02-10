@@ -4,16 +4,17 @@
 # Set default values.
 ---
 values:
-  enabled: False
-  pkg:
-    name: pki
-  rootgroup: root
-  config: '/etc/pki'
-  service:
-    name: pki
-  subcomponent:
-    config: '/etc/pki-subcomponent-formula.conf'
-  # Just here for testing
-  added_in_defaults: defaults_value
-  winner: defaults
+  enabled: True
+
+
+  key_import_pkg:
+    - name: apt
+  cert_import_pkg:
+    - name: ca-certificates
+
+  cert_store: /usr/local/share/ca-certificates
+  key_store: /etc/mygpgkeystore
+  cert_import_command: /usr/sbin/update-ca-certificates
+  key_import_command: '/usr/bin/apt-key add'
+
 ...

@@ -16,7 +16,7 @@ include:
 {% if salt['grains.get']('os_family') == 'Debian' %}
   {% set argument = ' ' %}
 {% else %}
-  {% set argument = '/' + rpmkeys.local_cert_store + '/' + certname %}
+  {% set argument = '/' + pki.cert_store + '/' + certname %}
 {% endif %}
 
 
@@ -24,7 +24,7 @@ include:
 {% for certname, certtext in salt['pillar.get']('pki:lookup:pubcerts',{}).items() %}
 {{ certname }}-cert-config-file-file-managed:
   file.managed:
-    - name: {{ pki.local_cert_store }}/{{ certname }}.crt
+    - name: {{ pki.cert_store }}/{{ certname }}.crt
     - contents: |
         {{ certtext | indent(8) }}
     - mode: "0644"
@@ -37,12 +37,13 @@ include:
     - name: {{ pki.cert_import_command }} {{ argument }}
     - onchanges_any:
       - file: {{ certname }}-cert-config-file-file-managed
+{% endfor %}
 
 # Loop through the pubkeys pillar
 {% for keyname, keytext in salt['pillar.get']('pki:lookup:pubkeys',{}).items() %}
 {{ keyname }}-key-config-file-file-managed:
   file.managed:
-    - name: {{ pki.local_key_store }}/{{ keyname }}.crt
+    - name: {{ pki.key_store }}/{{ keyname }}.crt
     - contents: |
         {{ keyname | indent(8) }}
     - mode: "0644"
@@ -55,3 +56,4 @@ include:
     - name: {{ pki.key_import_command }}/{{ keyname }}
     - onchanges_any:
       - file: {{ keyname }}-key-config-file-file-managed
+{% endfor %}

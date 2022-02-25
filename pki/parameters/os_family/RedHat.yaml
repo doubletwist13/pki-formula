@@ -13,9 +13,9 @@
 ---
 values:
   key_import_pkg:
-    - name: rpm
+    name: rpm
   cert_import_pkg:
-    - name: ca-certificates
+    name: ca-certificates
 
   cert_store: usr/share/pki/ca-trust-source/anchors
   key_store: /etc/pki/rpm-gpg

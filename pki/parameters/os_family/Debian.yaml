@@ -13,9 +13,9 @@
 ---
 values:
   key_import_pkg:
-    - name: apt
+    name: apt
   cert_import_pkg:
-    - name: ca-certificates
+    name: ca-certificates
 
   cert_store: /usr/local/share/ca-certificates
   key_store: /etc/mygpgkeystore

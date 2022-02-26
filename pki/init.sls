@@ -3,4 +3,5 @@
 
 include:
   - .check
+  - .package
   - .config
